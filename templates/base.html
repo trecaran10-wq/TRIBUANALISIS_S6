@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Tribuanálisis · Tributación II{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">TA</span><span><b>Tribuanálisis</b><small>TRIBUTACIÓN II</small></span></a>
+    <nav>
+      {% set nav = [
+        ('inicio','Inicio','/','home'),('nuevo','Nuevo análisis','/nuevo-analisis','plus'),
+        ('historial','Casos e historial','/historial','clock'),
+        ('excel','Plantilla Excel','/plantilla-excel','grid'),('reportes','Reportes','/reportes','chart'),
+        ('guia','Guía tributaria','/guia','book'),('perfil','Perfil','/perfil','user')
+      ] %}
+      {% for key,label,href,ico in nav %}
+      <a class="nav-link {% if page == key or (page == 'resultado' and key == 'historial') or (page == 'formulario' and key == 'nuevo') %}active{% endif %}" href="{{ href }}"><span class="nav-icon" aria-hidden="true">{% if ico == 'home' %}<svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v11h14V9M9 20v-7h6v7"/></svg>{% elif ico == 'plus' %}<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>{% elif ico == 'clock' %}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{% elif ico == 'grid' %}<svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>{% elif ico == 'chart' %}<svg viewBox="0 0 24 24"><path d="M4 20V11h4v9M10 20V5h4v15M16 20v-7h4v7M3 20h18"/></svg>{% elif ico == 'book' %}<svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22zM4 5.5V22M8 7h8M8 11h8"/></svg>{% else %}<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>{% endif %}</span>{{ label }}</a>
+      {% endfor %}
+    </nav>
+    <div class="sidebar-bottom"><div class="quote">“Conocimiento tributario para decisiones reales”</div><div class="mini-wave"></div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu" type="button" data-menu-toggle aria-label="Abrir menú">☰</button>
+      <form class="search" action="{{ url_for('history') }}"><span>⌕</span><input name="q" placeholder="Buscar casos, categorías o normativa…" aria-label="Buscar"></form>
+      <details class="account-menu">
+        <summary class="user-pill"><span class="avatar">{{ (current_user['full_name'] or 'U')[:1]|upper }}{{ (current_user['full_name'].split(' ')[-1] or '')[:1]|upper }}</span><span><b>{{ current_user['full_name'] }}</b><small>{{ current_user['email'] }}</small></span><span class="account-chevron">⌄</span></summary>
+        <div class="account-dropdown"><div class="account-dropdown-head"><b>{{ current_user['full_name'] }}</b><small>Cuenta personal</small></div><a href="{{ url_for('profile') }}">Mi perfil</a><form action="{{ url_for('logout') }}" method="post"><button type="submit">Cerrar sesión <span>↗</span></button></form></div>
+      </details>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}<div class="flash-wrap">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+    <footer>Tribuanálisis · Tributación II · Semana 6 <span>Herramienta académica de apoyo</span></footer>
+  </main>
+</div>
+</body>
+</html>
